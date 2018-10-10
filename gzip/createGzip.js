@@ -5,6 +5,10 @@ const filePath = '../data/zlib.json';
 const gzipedPath = '../data/test.json';
 
 const server = http.createServer(function (req, res) {
+  /*
+  * 也可以使用res.writeHead()
+  * 注意，在setHeader之后，依然可以进行writeHead， 但是writeHead之后再setHeader, 则会报错Error: Can't set headers after they are sent.
+  */
   res.setHeader('Access-Control-Allow-Origin', req.headers.origin);
   res.setHeader('Access-Control-Allow-Credentials', 'true');
   res.setHeader('Access-Control-Allow-Methods', 'GET,POST');
