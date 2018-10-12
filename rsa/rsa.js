@@ -26,7 +26,7 @@ let errDecryptedData = '';
 try {
   errDecryptedData = decrypt(encryptedData, key.errorPrivKey);
 } catch (e) {
-  console.log('解密出错', e);
+  console.log('使用错误的私钥解密出错', e);
 }finally { 
   console.log('加密前数据 %s', data);
   console.log('加密后数据 %s', encryptedData.toString('base64'));
@@ -54,4 +54,35 @@ console.log('验签结果: ', verifyResult);
 
 
 
+//aes加密
+const aesKey = 'fethunter1234567';
+function aesEncrypt (data, key, iv) {
+  let vi = iv || '';
+  //aes-128-ecb模式的aes加密， 则key必须为16位
+  let cipher = crypto.createCipheriv('aes-128-ecb', key, vi);
+  cipher.setAutoPadding(true);
+  let chunks = [];
+  chunks.push(cipher.update(data, 'utf-8', 'base64'));
+  chunks.push(cipher.update('hunter', 'utf-8', 'base64')); //使用update可以持续向cipher中压入数据，类似入栈操作
+  chunks.push(cipher.final('base64'));  //final必须在update之后执行
+  const re = chunks.join('');
+  console.log('加密结果: ', re);
+  return re;
+}
+
+//aes解密
+function aesDecrypt(encryptedData, key, iv) {
+  let vi = iv || '';
+  let chunks = [];
+  let decipher = crypto.createDecipheriv('aes-128-ecb', key, vi);
+  decipher.setAutoPadding(true);
+  chunks.push(decipher.update(encryptedData, 'base64', 'utf-8'));
+  chunks.push(decipher.final('utf-8'));
+  const de_res = chunks.join('');
+  console.log('解密结果: ', de_res);
+  return de_res;
+}
+
+const en_res = aesEncrypt('this is fet', aesKey);
+const de_res = aesDecrypt(en_res, aesKey);  //this is fethunter
 
