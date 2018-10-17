@@ -18,7 +18,7 @@ http.createServer(function (req, res) {
     console.log('geturl');
     res.end(datauri);
   } else if (req.url === '/geturl2') {
-    //如果是用流的方式也可以转为base64
+    //如果是用流的方式也可以转为buffer, 再转为base64
     const st = fs.createReadStream('./bz.jpg');
     st.on('data', chunk => {
       res.end('data:' + mineType.lookup('./bz.jpg') + ';base64,' + chunk.toString('base64'));
