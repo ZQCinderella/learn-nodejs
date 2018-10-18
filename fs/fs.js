@@ -8,6 +8,7 @@ const fs = require('fs');
 
 
 
+ //fs.readFileSync(path, options)如果不指定第二个参数的encodeing, 的结果是一个buffer. 可以指定base64, utf-8等
 try {
   //同步读取
   const data = fs.readFileSync('../data/zlib.json', 'utf-8');

@@ -1,0 +1,60 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta http-equiv="X-UA-Compatible" content="ie=edge">
+  <title>Document</title>
+</head>
+
+<body>
+  <form id="id_form" method="post" enctype="multipart/form-data">
+    <!-- 如果想让busboy的onfield事件先获取到iscompress的值，则需要将此input写到input[type="file"]之前 -->
+    <input type="hidden" name="iscompress" value="yes"> 
+    <input type="file" name="id_face" /><br>
+    <input type="button" id="submit_ocr" value="提交">
+  </form>
+  <form action="http://localhost:3000/uploadImg" method="post" enctype="multipart/form-data">
+    <input type="hidden" name="iscompress" value="no">
+    <input type="file" name="id_face" /><br>
+    <input type="submit" id="two" value="提交">
+  </form>
+</body>
+<script>
+  function sendRequest(url, data, cb, method) {
+    if (!method) method = 'POST';
+    var xhr = new XMLHttpRequest();
+    xhr.onreadystatechange = function () {
+      console.log(xhr.status);
+      if (xhr.status === 200 && xhr.readyState === 4) {
+        //var res = JSON.parse(xhr.responseText);
+        cb(xhr.responseText);
+      }
+    }
+    xhr.open(method, url, true);
+    //xhr.setRequestHeader('Content-type', "multipart/form-data");
+    xhr.send(data);
+  }
+  document.getElementById('submit_ocr').onclick = function () {
+    var formData = new FormData(document.getElementById('id_form'));
+    formData.append('idcard_name', 'fet');
+    formData.append('idcard_number', '12345678');
+    // sendRequest('http://localhost:3000/uploadImg', formData, function (res) {
+    //   console.log('返回结果: ', res);
+    // });
+    
+    fetch('http://localhost:3000/uploadImg', {
+      body: formData,
+      method: 'POST',
+      headers: {}
+    }).then(response => {
+      return response.text();
+    }).then(res => {
+      console.log('上传结果: ', res);
+    });
+    
+  }
+</script>
+
+</html>
