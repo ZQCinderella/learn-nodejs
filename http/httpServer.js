@@ -6,6 +6,7 @@ http.createServer(function (req, res) {
 
   /**
   * 设置跨域
+  * 注意，在setHeader之后，依然可以进行writeHead， 但是writeHead之后再setHeader, 则会报错Error: Can't set headers after they are sent.
   */
   res.setHeader('Access-Control-Allow-Origin', '*');
   res.setHeader('Access-Control-Allow-method', 'POST,GET');
@@ -27,7 +28,11 @@ http.createServer(function (req, res) {
     const queryObj = querystring.parse(query);
     console.log('请求参数: ', queryObj); 
     resData = queryObj;
-    //res.end(resData);
+    //writeHead必须在end和write之前调用，否则会报错Error [ERR_HTTP_HEADERS_SENT]: Cannot set headers after they are sent to the client
+    res.writeHead('400', 'inner error', {
+      'Content-Type': 'text/plain'
+    })
+    res.end('ok');
   } else if (req.method === 'POST') {
      res.setHeader('Content-Type', 'text/html; charset=utf-8');
      req.on('data', function (data) {

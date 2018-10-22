@@ -12,8 +12,8 @@ http.get('http://localhost:3002/getUser?name=fet&age=10', function (res) {
 const client = http.request({
   method: 'POST',
   protocol: 'http:',
-  port: '3002',
   hostname: '127.0.0.1',
+  port: '3002',
   path: '/',
   headers: {
     'Content-Type': 'application/json',
