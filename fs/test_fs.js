@@ -12,6 +12,12 @@ const creatFolder = function (floder) {
     fs.mkdirSync(floder);
   }
 }
+const checkFile = function (floder) {
+  //也可以使用fs.existsSync检查
+  if (!fs.existsSync(floder)) {
+    fs.mkdirSync(floder);
+  }
+}
 const filePath = path.resolve(__dirname, 'test');
 creatFolder(filePath);
 reader.pipe(fs.createWriteStream(path.resolve(__dirname, 'test/test.js')))
