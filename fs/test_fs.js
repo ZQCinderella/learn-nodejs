@@ -20,4 +20,36 @@ const checkFile = function (floder) {
 }
 const filePath = path.resolve(__dirname, 'test');
 creatFolder(filePath);
-reader.pipe(fs.createWriteStream(path.resolve(__dirname, 'test/test.js')))
+
+//写入文件
+//reader.pipe(fs.createWriteStream(path.resolve(__dirname, 'test/test.js')))
+
+const re = fs.createWriteStream(path.resolve(__dirname, 'test/test_drain1.js'));
+re.on('pipe', function () {
+  //当调用reader.pipe()时触发
+  console.log('有数据流入');
+})
+//使用 'drain' 事件来防止背压与避免内存问题
+function write(data, cb) {
+  if (!re.write(data)) {
+    re.once('drain', cb);
+  } else {
+    process.nextTick(cb);
+  }
+}
+
+// 在回调函数被执行后再进行其他的写入。
+write('hello', () => {
+  console.log('完成写入，可以进行更多的写入');
+});
+// reader.on('data', function (chunk) {
+//   // re.write(chunk, function () {
+//   //   console.log('write ok');
+//   // });
+//   write(chunk, function () {
+//     console.log('write ok');
+//   });
+// })
+reader.resume();
+console.log(reader.readableFlowing);   //当监听data, 调用resume, 或者pipe时，会将,readableFlowing这个属性值置为true
+reader.pipe(re);
